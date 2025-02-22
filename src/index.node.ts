@@ -1,11 +1,13 @@
-import got, {
+import type {
     OptionsOfBufferResponseBody,
     OptionsOfJSONResponseBody,
     RequestError,
     Response,
-} from "got";
+} from "got" with { "resolution-mode": "require" };
 import {CookieJar} from "./cookieJar";
 import {AptosClientRequest, AptosClientResponse} from "./types";
+
+const getGot = () => import("got");
 
 const cookieJar = new CookieJar();
 
@@ -22,6 +24,7 @@ export default async function aptosClient<Res>(
 export async function jsonRequest<Res>(
     requestOptions: AptosClientRequest
 ): Promise<AptosClientResponse<Res>> {
+    const {default: got} = await getGot();
     const {params, method, url, headers, body} = requestOptions;
 
     const request: OptionsOfJSONResponseBody = {
@@ -86,6 +89,7 @@ export async function jsonRequest<Res>(
 export async function bcsRequest(
     requestOptions: AptosClientRequest,
 ): Promise<AptosClientResponse<Buffer>> {
+    const {default: got} = await getGot();
     const {params, method, url, headers, body} = requestOptions;
 
     const request: OptionsOfBufferResponseBody = {
